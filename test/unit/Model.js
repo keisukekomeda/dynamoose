@@ -2292,6 +2292,17 @@ describe("Model", () => {
 						"TableName": "User"
 					});
 				});
+
+				it("Should return object with correct values if using custom types", async () => {
+					createItemFunction = () => Promise.resolve();
+					User = dynamoose.model("User", {"id": Number, "name": String, "birthday": Date});
+					const user = await callType.func(User).bind(User)({"id": 1, "name": "Charlie", "birthday": new Date(1)});
+					expect(user).to.be.an("object");
+					expect(Object.keys(user)).to.eql(["id", "name", "birthday"]);
+					expect(user.id).to.eql(1);
+					expect(user.name).to.eql("Charlie");
+					expect(user.birthday).to.eql(new Date(1));
+				});
 			});
 		});
 	});
